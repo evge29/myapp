@@ -78,7 +78,6 @@ public class Service extends android.app.Service {
     public void onDestroy() {
         super.onDestroy();
         Log.i(TAG, "onDestroy called");
-        // restart the never ending service
         Intent broadcastIntent = new Intent(Global.RESTART_INTENT);
         sendBroadcast(broadcastIntent);
         stoptimertask();
@@ -100,6 +99,10 @@ public class Service extends android.app.Service {
 
     public void startTimer() {
         Log.i(TAG, "Starting timer");
+
+
+        new SimpleAsyncTask(" ").execute();
+
 
         stoptimertask();
         timer = new Timer();

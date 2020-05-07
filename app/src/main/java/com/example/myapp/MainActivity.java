@@ -4,12 +4,17 @@ package com.example.myapp;
 import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
+import android.widget.TextView;
 
 
 import com.example.myapp.folder1.ServiceBroadcastReceiver;
 
 
 public class MainActivity extends Activity {
+
+    private static final String TEXT_STATE = "currentText";
+    private TextView mTextView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
