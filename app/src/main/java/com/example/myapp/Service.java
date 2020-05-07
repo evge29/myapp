@@ -1,7 +1,10 @@
 package com.example.myapp;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -17,6 +20,8 @@ public class Service extends android.app.Service {
     private static String TAG = "Service";
     private static Service mCurrentService;
     private int counter = 0;
+    public CheckMyNetwork check;
+    public final static int INTERVAL = 60*1000*10;
 
     public Service() {
         super();
@@ -36,14 +41,27 @@ public class Service extends android.app.Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
         Log.d(TAG, "restarting Service !!");
-        counter = 0;
+        check = new CheckMyNetwork(this);
+        boolean network = check.networkCheck();
+        //counter = 0;
 
-        if (intent == null) {
+        if(network){
+            Log.i(TAG,"Connected!!");
+            sleepDelay();
+        }
+        else{
+            Log.i(TAG,"Not Connected!!");
+        }
+        SharedPreferences prefs= getSharedPreferences("com.example.myapp.NotEndingService", MODE_PRIVATE);
+
+        if(prefs.getInt("timeCounter",0)!=0) {
+            int timeCounter = prefs.getInt("counter", 0);
+        }
+        if(intent == null){
             ProcessClass bck = new ProcessClass();
             bck.launchService(this);
         }
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             restartForeground();
         }
 
@@ -92,6 +110,18 @@ public class Service extends android.app.Service {
         sendBroadcast(broadcastIntent);
 
     }
+    public void sleepDelay(){
+        final Handler handler = new Handler();
+        new SimpleAsyncTask().execute();
+        new Runnable() {
+            @Override
+            public void run() {
+                handler.postDelayed(this,INTERVAL);
+                Log.i("TAG" , "");
+
+            }
+        }.run();
+    }
 
     private static Timer timer;
     private static TimerTask timerTask;
@@ -99,10 +129,6 @@ public class Service extends android.app.Service {
 
     public void startTimer() {
         Log.i(TAG, "Starting timer");
-
-
-        new SimpleAsyncTask(" ").execute();
-
 
         stoptimertask();
         timer = new Timer();

@@ -16,14 +16,8 @@ import java.util.Random;
 
 class SimpleAsyncTask extends AsyncTask<Void, Void, String> {
 
-    private String content="default";
     private static String TAG = "SimpleAsyncTask";
-    private String result;
 
-
-    public SimpleAsyncTask(String st) {
-        content = st;
-    }
 
 
     @Override
@@ -40,7 +34,7 @@ class SimpleAsyncTask extends AsyncTask<Void, Void, String> {
             e.printStackTrace();
         }
         try {
-            String data = NetworkUtils.getInfo("backend v1");
+            String data = NetworkUtils.getInfo();
             Log.i(TAG, data);
 
             JSONArray items = new JSONArray(data);
@@ -48,9 +42,9 @@ class SimpleAsyncTask extends AsyncTask<Void, Void, String> {
             int i = 0;
             while (i < items.length()) {
                 JSONObject job = items.getJSONObject(i);
-                Log.i(TAG, "json = "+job.toString(i));
-                String title = job.getString("jobType");
-                Log.i(TAG, "type="+title);
+                Log.i(TAG, "json = "+job.toString());
+                String jobType= job.getString("jobType");
+                Log.i(TAG, "type="+jobType);
                 String host = job.getString("host");
                 Log.i(TAG, "host="+host);
                 String count = job.getString("count");
@@ -83,9 +77,9 @@ class SimpleAsyncTask extends AsyncTask<Void, Void, String> {
                     ping.getInputStream().close();
                 }
                 Log.i(TAG, "pingResult="+pingResult);
-
-
+                return pingResult;
             }
+            i++;
         } catch (JSONException ex) {
             ex.printStackTrace();
         } catch (IOException ex) {
@@ -93,8 +87,8 @@ class SimpleAsyncTask extends AsyncTask<Void, Void, String> {
         }
         return "Awake at last after sleeping for " + s + " milliseconds!";
     }
-    protected void onPostExecute(String result) {
-        result=content;
+    protected void  onPostExecute(String string) {
+        super.onPostExecute(string);
     }
 }
 

@@ -1,6 +1,8 @@
 package com.example.myapp;
 
 import android.net.Uri;
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,9 +12,10 @@ import java.net.URL;
 
 
 class NetworkUtils{
+    private static String TAG = "Network";
 
 
-    static String getInfo(String queryString){
+    static String getInfo() {
 
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
@@ -21,7 +24,7 @@ class NetworkUtils{
         try {
 
             Uri builtURI = Uri.parse("http://10.0.2.2:5000/getjobs").buildUpon().build();
-
+            Log.i(TAG, "connecting to" + builtURI);
             URL requestURL = new URL(builtURI.toString());
 
             urlConnection = (HttpURLConnection) requestURL.openConnection();
@@ -62,7 +65,8 @@ class NetworkUtils{
 
             }
         }
-
+        Log.i(TAG,"getJSON:" +JSONString);
         return JSONString;
+
     }
 }
