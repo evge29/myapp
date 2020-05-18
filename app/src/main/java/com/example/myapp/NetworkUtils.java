@@ -23,7 +23,7 @@ class NetworkUtils{
 
         try {
 
-            Uri builtURI = Uri.parse("http://10.0.2.2:5000/getjobs").buildUpon().build();
+            Uri builtURI = Uri.parse("http://192.168.0.15:5000/getjobs/hardware").buildUpon().build();
             Log.i(TAG, "connecting to" + builtURI);
             URL requestURL = new URL(builtURI.toString());
 

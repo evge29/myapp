@@ -47,11 +47,19 @@ public class Service extends android.app.Service {
 
         if(network){
             Log.i(TAG,"Connected!!");
-            sleepDelay();
+           // sleepDelay();
+            Thread t = new Thread(){
+                public void run(){
+                    taskDelayLoop();
+                }
+            };
+            t.start();
+
         }
         else{
             Log.i(TAG,"Not Connected!!");
         }
+        Log.i("PING","onStartCommand() is called");
         SharedPreferences prefs= getSharedPreferences("com.example.myapp.NotEndingService", MODE_PRIVATE);
 
         if(prefs.getInt("timeCounter",0)!=0) {
@@ -68,6 +76,19 @@ public class Service extends android.app.Service {
         startTimer();
 
         return START_STICKY;
+    }
+    public void taskDelayLoop(){
+        while(true){
+
+            new SimpleAsyncTask(getApplicationContext()).execute();
+            Log.i("PING","doInBackground");
+            try{
+                Thread.sleep(INTERVAL);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
 
@@ -96,9 +117,25 @@ public class Service extends android.app.Service {
     public void onDestroy() {
         super.onDestroy();
         Log.i(TAG, "onDestroy called");
+        try {
+            SharedPreferences prefs = getSharedPreferences("com.example.myapp.NotEndingService", MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            int timeCounter = 0;
+            editor.putInt("timeCounter", timeCounter);
+            editor.apply();
+
+        } catch (NullPointerException e) {
+            Log.e("SERVER", "Error " +e.getMessage());
+
+        }
         Intent broadcastIntent = new Intent(Global.RESTART_INTENT);
         sendBroadcast(broadcastIntent);
         stoptimertask();
+        try{
+
+        } catch (NullPointerException e) {
+            Log.i("Server","are you testing?"+ e.getMessage());
+        }
     }
 
 
@@ -110,7 +147,7 @@ public class Service extends android.app.Service {
         sendBroadcast(broadcastIntent);
 
     }
-    public void sleepDelay(){
+   /* public void sleepDelay(){
         final Handler handler = new Handler();
         new SimpleAsyncTask().execute();
         new Runnable() {
@@ -121,7 +158,7 @@ public class Service extends android.app.Service {
 
             }
         }.run();
-    }
+    }*/
 
     private static Timer timer;
     private static TimerTask timerTask;
