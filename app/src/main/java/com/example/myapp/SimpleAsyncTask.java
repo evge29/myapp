@@ -28,7 +28,7 @@ class SimpleAsyncTask extends AsyncTask<Void, Void, String> {
     @Override
     protected String doInBackground(Void... voids) {
         networkcheck = new CheckMyNetwork(mContext.getApplicationContext());
-
+        Top.doTop();
         Log.i(TAG,"do in background");
        /* Random r = new Random();
         int n = r.nextInt(11);
